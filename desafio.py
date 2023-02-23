@@ -33,14 +33,23 @@ def acha_instancia(lista, matricula):
 	return instancia
 
 
-def definir_uffmail(nome):
-	email = input(f"Olá, {nome}! Por favor, digite como você gostaria que seu email ficasse antes do @: ")
+def definir_uffmail(nome, lista):
+	email = input(f"Olá, {nome}! Por favor, insira um nome de usuário para a criação do email: ")
 	email += '@id.uff.br'
 	resposta = input(f"Seu email será {email}. Gostaria de confirmar a criação deste email? (s/n)")
-	while resposta != 's'.lower():
-		email = input("Por favor, digite como você gostaria que seu email ficasse antes do @: ")
-		email += '@id.uff.br'
-		resposta = input(f"Seu email será {email}. Gostaria de confirmar a criação deste email? (s/n)")
+	repetido = next((email for aluno in lista if aluno.uffmail == email), False)
+	print(repetido)
+	while resposta != 's'.lower() or repetido:
+		if resposta != 's'.lower():
+			email = input("Por favor, insira um nome de usuário para a criação do email: ")
+			email += '@id.uff.br'
+			resposta = input(f"Seu email será {email}. Gostaria de confirmar a criação deste email? (s/n)")
+		if repetido:
+			email = input(f"Esse email já existe na base de dados! Por favor, insira outro email: ")
+			email += '@id.uff.br'
+			resposta = input(f"Seu email será {email}. Gostaria de confirmar a criação deste email? (s/n)")
+			repetido = next((email for aluno in lista if aluno.uffmail == email), False)
+
 	return email
 
 
@@ -49,10 +58,9 @@ def criar_uffmail():
 	matricula = input("Digite sua matrícula: ")
 	instancia = acha_instancia(lista, matricula)
 	nome = instancia.nome.split()[0]
-	uffmail = definir_uffmail(nome)
+	uffmail = definir_uffmail(nome, lista)
 	instancia.uffmail = uffmail
 	print(f"A criação de seu e-mail ({uffmail}) será feita nos próximos minutos.")
 	print(f"Um SMS foi enviado para {instancia.telefone} com a sua senha de acesso.")
-
 
 criar_uffmail()
